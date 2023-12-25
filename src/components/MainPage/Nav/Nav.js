@@ -18,7 +18,7 @@ export default function App() {
         <NavbarBrand>
           <AcmeLogo />
           <Link className="font-bold text-inherit" href="/">
-            Photera
+            YourLogoAndName
           </Link>
         </NavbarBrand>
         <NavbarContent justify="end" className="gap-2">

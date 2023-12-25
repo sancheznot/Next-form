@@ -96,7 +96,7 @@ const Form = () => {
             <div className="flex flex-col h-full">
               <h2 className="text-5xl p-2 font-thin">Sign Up</h2>
               <h3 className="text-xl sm:text-base p-2 ">
-                create your photos portfolio
+                slogan slogan slogan slogan slogan slogan slogan slogan slogan
               </h3>
             </div>
           )}
