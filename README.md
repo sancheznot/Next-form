@@ -31,6 +31,20 @@ Now you can check your mongoAtlas and you will see a new users added
 if you try this path [http://localhost:3000/dashboard/profile] (http://localhost:3000/dashboard/profile)
 if all are right, you will see all information about the user
 
+## Run compile 
+If you want create or compile your code for Android or ios just run this command, you will need to have  (Xcode for iOS, Android Studio for Android)
+
+
+```bash
+npm run build
+# and
+npx cap open ios
+# or
+npx cap open android
+```
+
+After this you'll see the IDEs and you need to make the rigth configurations on it.
+
 
 If you need more information or help with this code, or have some fix to do you can contact to me.
 

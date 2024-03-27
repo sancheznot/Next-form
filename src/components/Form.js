@@ -6,7 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
-import GoogleLogo from "@pb/img/login/googleLogo.png";
+import GoogleLogo from "@@/img/login/googleLogo.png";
 
 const Form = () => {
   const [errors, setErrors] = useState(null);

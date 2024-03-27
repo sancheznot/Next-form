@@ -1,7 +1,7 @@
 import React from 'react'
 import Form from '@/components/Form'
 import Image from 'next/image'
-import logo from "@pb/img/nobgLogo.png"
+import logo from "@@/img/nobgLogo.png"
 
 const page = () => {
 
