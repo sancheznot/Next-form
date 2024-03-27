@@ -38,6 +38,8 @@ If you want create or compile your code for Android or ios just run this command
 ```bash
 npm run build
 # and
+npx cap sync
+# and after all
 npx cap open ios
 # or
 npx cap open android
