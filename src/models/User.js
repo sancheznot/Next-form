@@ -1,13 +1,7 @@
 import { Schema, model, models } from "mongoose";
+// import Wishlist from "./Wishlist"; if yo need it
 
 const UserSchema = new Schema({
-  username: {
-    type: String,
-    unique: true,
-    required: true,
-    minlength: 3,
-    maxlength: 20,
-  },
   email: {
     type: String,
     unique: true,
@@ -25,18 +19,73 @@ const UserSchema = new Schema({
     minlength: 6,
     select: false,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
+  phoneNumber: {
+    type: String,
+    match: [/^(\+?57)?([0-9]{10,12})$/, "Please add a valid phone number"],
+  },
+  address: {
+    type: String,
+  },
+  accountStatus: {
+    type: String,
+    default: "active",
+    enum: ["active", "suspended", "banned"], // Possible statuses
   },
   image: {
     type: String,
   },
-  isAdmin: {
-    type: Boolean,
-    default: false,
+  rol: {
+    type: String,
+    default: "user",
+  },
+  // reviewsHistory: [
+  //   {
+  //     type: Schema.Types.ObjectId,
+  //     ref: "Review",
+  //   },
+  // ],
+  // wishList: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: "WishList",
+  // },
+  // orders: [
+  //   {
+  //     type: Schema.Types.ObjectId,
+  //     ref: "Order",
+  //   },
+  // ],
+  // cart: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: "Cart",
+  // },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  // Fields for managing tokens and sessions
+  refreshToken: {
+    type: String,
+  },
+  refreshTokenExpiration: {
+    type: Date,
   },
 });
+
+// Middleware to automatically create a wishlist if not present
+// UserSchema.pre("save", async function (next) {
+//   if (!this.wishList) {
+//     try {
+//       const newWishList = await Wishlist.create({
+//         user: this._id,
+//         products: [],
+//       });
+//       this.wishList = newWishList._id;
+//     } catch (error) {
+//       return next(error);
+//     }
+//   }
+//   next();
+// });
 
 const User = models.User || model("User", UserSchema);
 export default User;
