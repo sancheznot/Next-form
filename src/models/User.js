@@ -23,9 +23,6 @@ const UserSchema = new Schema({
     type: String,
     match: [/^(\+?57)?([0-9]{10,12})$/, "Please add a valid phone number"],
   },
-  address: {
-    type: String,
-  },
   accountStatus: {
     type: String,
     default: "active",
@@ -38,26 +35,10 @@ const UserSchema = new Schema({
     type: String,
     default: "user",
   },
-  // reviewsHistory: [
-  //   {
-  //     type: Schema.Types.ObjectId,
-  //     ref: "Review",
-  //   },
-  // ],
-  // wishList: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "WishList",
-  // },
-  // orders: [
-  //   {
-  //     type: Schema.Types.ObjectId,
-  //     ref: "Order",
-  //   },
-  // ],
-  // cart: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "Cart",
-  // },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -71,21 +52,7 @@ const UserSchema = new Schema({
   },
 });
 
-// Middleware to automatically create a wishlist if not present
-// UserSchema.pre("save", async function (next) {
-//   if (!this.wishList) {
-//     try {
-//       const newWishList = await Wishlist.create({
-//         user: this._id,
-//         products: [],
-//       });
-//       this.wishList = newWishList._id;
-//     } catch (error) {
-//       return next(error);
-//     }
-//   }
-//   next();
-// });
 
-const User = models.User || model("User", UserSchema);
+
+const User = models?.User || model("User", UserSchema);
 export default User;

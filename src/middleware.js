@@ -1,3 +1,12 @@
-export { default } from "next-auth/middleware"
+import authConfig from "./auth.config"
+import NextAuth from "next-auth"
 
-export const config = { matcher: ["/dashboard/:path*"], basePath: "/api/auth" }
+const { auth } = NextAuth(authConfig)
+
+export default auth((req) => {
+  // Tu lógica aquí
+})
+
+export const config = {
+  matcher: ["/dashboard/:path*", "/api/protected/:path*"]
+}
