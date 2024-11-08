@@ -76,7 +76,7 @@ const Form = () => {
   };
 
   return (
-    <>
+    <div className='flex flex-row w-full justify-center items-center dark:bg-background'>
       <div
         className={
           pathname === "/login"
@@ -87,7 +87,7 @@ const Form = () => {
           {pathname === "/login" ? (
             <h2 className="text-5xl p-2 ml-10 font-thin">Sign In</h2>
           ) : (
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full dark:text-white">
               <h2 className="text-5xl p-2 font-thin">Sign Up</h2>
               <h3 className="text-xl sm:text-base p-2 ">
                 slogan slogan slogan slogan slogan slogan slogan slogan slogan
@@ -238,7 +238,7 @@ const Form = () => {
                 </div>
               </div>
             ) : (
-              <div className="w-full flex flex-col justify-center sm:p-0 items-start">
+              <div className="w-full flex flex-col justify-center sm:p-0 items-start dark:text-white">
                 <div className="w-full flex flex-col justify-center sm:p-0 items-center">
                   <p className="my-2 sm:hidden">or</p>
                   <h2 className="text-2xl sm:text-lg sm:p-0 p-2">
@@ -271,7 +271,7 @@ const Form = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

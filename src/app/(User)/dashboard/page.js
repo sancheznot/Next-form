@@ -1,13 +1,13 @@
-"use client";
+import { checkAuth } from "@/utils/auth"
 
-import Layout from "@/components/Dashboard/Layout";
-
-const Dashboard = () => {
+export default async function DashboardPage() {
+  const session = await checkAuth()
+    console.log(session)
   return (
-    <div className="flex justify-center items-center">
-      <Layout />
+    <div>
+      <h1>Dashboard</h1>
+      <p>Welcome {session.user.email}</p>
+      <pre>{JSON.stringify(session, null, 2)}</pre>
     </div>
-  );
-};
-
-export default Dashboard;
+  )
+}

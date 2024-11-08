@@ -6,17 +6,17 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { WrapperMotion } from "./FrameMotion/WrapperMotion";
 import { ChakraProvider } from "@chakra-ui/react";
 
-const Provider = ({ children, session }) => {
+const Provider = ({ children }) => {
   return (
-    <WrapperMotion>
-      <NextUIProvider className="w-full h-full">
+    <SessionProvider refetchInterval={0} refetchOnWindowFocus={true}>
+      <NextUIProvider>
         <NextThemesProvider attribute="class" defaultTheme="light">
-          <ChakraProvider theme={"theme"}>
-            <SessionProvider session={session}>{children}</SessionProvider>
+          <ChakraProvider>
+            <WrapperMotion>{children}</WrapperMotion>
           </ChakraProvider>
         </NextThemesProvider>
       </NextUIProvider>
-    </WrapperMotion>
+    </SessionProvider>
   );
 };
 

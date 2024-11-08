@@ -1,3 +1,9 @@
+// This file is used to connect to MongoDB using mongoose
+// It also caches the connection so as to avoid connecting to the database multiple times
+// It exports a function called connectMongoDB that connects to the database and returns the connection
+// It also exports a middleware function called databaseMiddleware that can be used in API routes to connect to the database
+// It is important to use the databaseMiddleware in your API routes to connect to the database
+// ./src/lib/mongodb.js
 import mongoose from "mongoose";
 
 const { MONGODB_URI } = process.env;
