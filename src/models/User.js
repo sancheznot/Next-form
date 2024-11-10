@@ -1,5 +1,7 @@
+// src/models/User.js
 import { Schema, model, models } from "mongoose";
-// import Wishlist from "./Wishlist"; if yo need it
+import { authenticator } from "otplib";
+import crypto from "crypto";
 
 const UserSchema = new Schema({
   email: {
@@ -26,7 +28,7 @@ const UserSchema = new Schema({
   accountStatus: {
     type: String,
     default: "active",
-    enum: ["active", "suspended", "banned"], // Possible statuses
+    enum: ["active", "suspended", "banned"],
   },
   image: {
     type: String,
@@ -39,20 +41,89 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  twoFactorEnabled: {
+    type: Boolean,
+    default: false,
+    select: false,
+  },
+  twoFactorSecret: {
+    type: String,
+    select: false,
+  },
+  backupCodes: [
+    {
+      code: {
+        type: String,
+        select: false,
+      },
+      used: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  ],
+  verified: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  // Fields for managing tokens and sessions
-  refreshToken: {
-    type: String,
-  },
-  refreshTokenExpiration: {
-    type: Date,
-  },
 });
 
+// Method to generate new 2FA secret
+UserSchema.methods.generate2FASecret = function () {
+  const secret = authenticator.generateSecret();
+  this.twoFactorSecret = secret;
+  return secret;
+};
 
+// Method to verify 2FA token
+UserSchema.methods.verify2FAToken = function (token) {
+  return authenticator.verify({
+    token,
+    secret: this.twoFactorSecret,
+  });
+};
+
+// Generate backup codes
+UserSchema.methods.generateBackupCodes = function () {
+  const codes = [];
+  for (let i = 0; i < 10; i++) {
+    codes.push({
+      code: crypto.randomBytes(4).toString("hex").toUpperCase(),
+      used: false,
+    });
+  }
+  this.backupCodes = codes;
+  return codes.map((c) => c.code);
+};
+
+// Verify backup code
+UserSchema.methods.verifyBackupCode = async function (code) {
+  const backupCode = this.backupCodes.find(
+    (bc) => !bc.used && bc.code === code
+  );
+  if (backupCode) {
+    backupCode.used = true;
+    await this.save();
+    return true;
+  }
+  return false;
+};
+
+// Pre-save hook to ensure backup codes are generated when 2FA is enabled
+UserSchema.pre("save", function (next) {
+  if (
+    this.isModified("twoFactorEnabled") &&
+    this.twoFactorEnabled &&
+    (!this.backupCodes || this.backupCodes.length === 0)
+  ) {
+    this.generateBackupCodes();
+  }
+  next();
+});
 
 const User = models?.User || model("User", UserSchema);
 export default User;

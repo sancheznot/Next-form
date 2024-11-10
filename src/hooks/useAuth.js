@@ -15,7 +15,7 @@ export function useAuth(initialSession) {
     return {
       session: initialSession,
       status: "loading",
-      isAuthenticated: !!initialSession?.user?._id
+      isAuthenticated: !!initialSession?.user?.id
     }
   }
 
@@ -23,6 +23,6 @@ export function useAuth(initialSession) {
   return {
     session: session,
     status,
-    isAuthenticated: !!session?.user?._id
+    isAuthenticated: !!session?.user?.id
   }
 }

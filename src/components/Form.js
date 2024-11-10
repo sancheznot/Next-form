@@ -10,11 +10,16 @@ import GoogleLogo from "@@/img/login/googleLogo.png";
 const Form = () => {
   const [errors, setErrors] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrors(null);
+    setSuccess(null);
+
     const formData = new FormData(e.currentTarget);
 
     if (pathname === "/register") {
@@ -26,7 +31,6 @@ const Form = () => {
           password: formData.get("password"),
         });
 
-        setErrors(null);
         setSuccess(res.data.message);
 
         const result = await signIn("credentials", {
@@ -35,12 +39,24 @@ const Form = () => {
           redirect: false,
         });
 
+        if (result?.error) {
+          setErrors(result.error);
+          return;
+        }
+
         if (result?.ok) {
+          // Check if 2FA verification is required
+          if (result.url?.includes("2fa")) {
+            router.push("/auth/verify-2fa");
+            return;
+          }
           router.push("/dashboard");
         }
       } catch (error) {
         setSuccess(null);
         setErrors(error.response?.data.message || "Registration failed");
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -50,33 +66,47 @@ const Form = () => {
         const password = formData.get("password");
 
         if (!email || !password) {
+          setIsLoading(false);
           return setErrors("Email and password are required");
         }
 
+        console.log("Attempting login with email:", email);
         const result = await signIn("credentials", {
           email,
           password,
           redirect: false,
         });
+        console.log("Sign in result:", result);
 
         if (result?.error) {
           setSuccess(null);
-          return setErrors(result.error);
+          setErrors(result.error);
+          return;
         }
 
         if (result?.ok) {
           setSuccess("Login successful");
+
+          // Check if 2FA verification is required
+          if (result.url?.includes("2fa")) {
+            router.push("/auth/verify-2fa");
+            return;
+          }
+
           router.push("/dashboard");
         }
       } catch (error) {
+        console.error("Login error:", error);
         setSuccess(null);
         setErrors("Login failed");
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
   return (
-    <div className='flex flex-row w-full justify-center items-center dark:bg-background'>
+    <div className="flex flex-row w-full justify-center items-center dark:bg-background">
       <div
         className={
           pathname === "/login"
@@ -129,8 +159,10 @@ const Form = () => {
                   type="email"
                   id="email"
                   name="email"
+                  autoComplete="email"
                   className="border border-gray-300 rounded-lg p-3 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="Enter your email"
+                  disabled={isLoading}
                 />
                 <label
                   htmlFor="password"
@@ -141,8 +173,10 @@ const Form = () => {
                   type="password"
                   id="password"
                   name="password"
+                  autoComplete="current-password"
                   placeholder="Enter your password"
                   className="border border-gray-300 rounded-lg p-3 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  disabled={isLoading}
                 />
               </div>
             ) : (
@@ -157,6 +191,7 @@ const Form = () => {
                     type="email"
                     id="email"
                     name="email"
+                    disabled={isLoading}
                     className="border border-gray-300 rounded-lg p-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder="Enter your email"
                   />
@@ -169,6 +204,7 @@ const Form = () => {
                     type="text"
                     id="name"
                     name="name"
+                    disabled={isLoading}
                     className="border border-gray-300 rounded-lg p-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder="Enter your name"
                   />
@@ -181,10 +217,10 @@ const Form = () => {
                     type="text"
                     id="lastname"
                     name="lastname"
+                    disabled={isLoading}
                     className="border border-gray-300 rounded-lg p-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder="Enter your lastname"
                   />
-
                   <label
                     htmlFor="password"
                     className="text-gray-700 dark:text-white sm:text-sm sm:mb-0 text-md mb-2">
@@ -194,6 +230,7 @@ const Form = () => {
                     type="password"
                     id="password"
                     name="password"
+                    disabled={isLoading}
                     placeholder="Enter your password"
                     className="border border-gray-300 rounded-lg p-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   />
@@ -201,12 +238,16 @@ const Form = () => {
               </>
             )}
             {pathname === "/login" ? (
-              <button className="w-5/12 sm:w-10/12 bg-gray-300 p-3 mt-2 rounded-xl text-xl hover:bg-blue-500 hover:text-white text-black">
-                Sign In
+              <button
+                disabled={isLoading}
+                className="w-5/12 sm:w-10/12 bg-gray-300 p-3 mt-2 rounded-xl text-xl hover:bg-blue-500 hover:text-white text-black disabled:opacity-50 disabled:cursor-not-allowed">
+                {isLoading ? "Signing In..." : "Sign In"}
               </button>
             ) : (
-              <button className="w-5/12 sm:w-10/12 bg-gray-300 p-2 mt-2 rounded-xl text-xl hover:bg-blue-500 hover:text-white text-black">
-                Sign Up
+              <button
+                disabled={isLoading}
+                className="w-5/12 sm:w-10/12 bg-gray-300 p-2 mt-2 rounded-xl text-xl hover:bg-blue-500 hover:text-white text-black disabled:opacity-50 disabled:cursor-not-allowed">
+                {isLoading ? "Signing Up..." : "Sign Up"}
               </button>
             )}
           </form>
@@ -223,7 +264,8 @@ const Form = () => {
                         callbackUrl: "/dashboard",
                       })
                     }
-                    className="w-full p-1 mt-2 rounded-lg text-xl bg-white border border-gray-400">
+                    disabled={isLoading}
+                    className="w-full p-1 mt-2 rounded-lg text-xl bg-white border border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed">
                     <div className="w-16">
                       <Image src={GoogleLogo} alt="logo_Google" />
                     </div>
@@ -252,7 +294,8 @@ const Form = () => {
                           callbackUrl: "/dashboard",
                         })
                       }
-                      className="w-full p-1 mt-2 rounded-lg text-xl bg-white border border-gray-400">
+                      disabled={isLoading}
+                      className="w-full p-1 mt-2 rounded-lg text-xl bg-white border border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed">
                       <div className="w-16 sm:w-14">
                         <Image src={GoogleLogo} alt="logo_Google" />
                       </div>

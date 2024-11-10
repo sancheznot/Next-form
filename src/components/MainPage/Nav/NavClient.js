@@ -27,6 +27,7 @@ export default function NavClient({ initialSession }) {
           </Link>
         </NavbarBrand>
         <NavbarContent justify="end" className="gap-2">
+          {isAuthenticated}
           {status !== "loading" && (
             <>
               {!isAuthenticated ? (
