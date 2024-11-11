@@ -8,9 +8,9 @@ import {
   NavbarItem,
   Button,
 } from "@nextui-org/react";
-import { AcmeLogo } from "@/components/MainPage/Nav/AcmeLogo";
+import { AcmeLogo } from "@/components/mainPage/Nav/AcmeLogo";
 import { ThemeSwitcher } from "@/components/shared/NextTheme/ThemeSwitcher";
-import { SignOut } from "@/components/MainPage/Nav/SignOut";
+import { SignOut } from "@/components/mainPage/Nav/SignOut";
 import { useAuth } from "@/hooks/auth/useAuth";
 import Link from "next/link";
 

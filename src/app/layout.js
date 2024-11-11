@@ -1,7 +1,7 @@
+import Nav from "@/components/mainPage/Nav/Nav"
 import "./globals.css"
 import "./style/chakra-scope.css"
 import Provider from "@/components/Providers"
-import Nav from "@/components/MainPage/Nav/Nav"
 
 export const metadata = {
   title: "Template",
