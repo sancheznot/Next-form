@@ -1,8 +1,75 @@
+# Next.js Authentication Template
 
+A modern authentication template built with Next.js 14, featuring Google OAuth, Two-Factor Authentication (2FA), and MongoDB integration. This template provides a solid foundation for building secure web applications with advanced authentication features.
 
-## Getting Started
+## Features
 
-First, run the development server:
+- 🔐 Complete authentication system
+- 🌐 Google OAuth integration
+- 📱 Two-Factor Authentication (2FA)
+- 🗄️ MongoDB database integration
+- 🎨 Modern UI with NextUI and Framer Motion
+- 📱 Mobile-ready (iOS/Android) with Capacitor
+- 🌓 Dark/Light mode support
+
+## Demo
+
+Here's a quick look at the authentication interfaces:
+
+### Sign In
+![Sign In Page](/public/git/img/signIn.png)
+Clean and modern sign-in interface with social login options.
+
+### Sign Up
+![Sign Up Page](/public/git/img/signUp.png)
+User-friendly registration process with form validation.
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 16.x or later
+- MongoDB database
+- Google OAuth credentials
+- (Optional) Xcode for iOS, Android Studio for Android
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/sancheznot/Next-form.git
+cd your-repo-name
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+3. Configure environment variables:
+Create a `.env` file in the root directory with the following variables:
+
+```env
+GOOGLE_ID=your_google_client_id
+GOOGLE_SECRET=your_google_client_secret
+MONGODB_URI=your_mongodb_uri
+NEXTAUTH_SECRET=your_nextauth_secret_key
+```
+
+### Environment Variables Explained
+
+- `GOOGLE_ID`: OAuth 2.0 Client ID from [Google Cloud Console](https://console.developers.google.com/apis/credentials)
+- `GOOGLE_SECRET`: OAuth 2.0 Client Secret from Google Cloud Console
+- `MONGODB_URI`: Your MongoDB connection string
+- `NEXTAUTH_SECRET`: A secure string for session encryption (e.g., generate with `openssl rand -base64 32`)
+
+### Development
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -12,44 +79,77 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) to see your application.
 
-## .ENV Configuration
+### Key Routes
 
-You need to do some things before start, need set the Evironment Variable
-such as :
+- `/register` - User registration
+- `/login` - User login
+- `/dashboard/` - User Dashboard (protected route)
+- `/dashboard/profile` - User profile (protected route)
 
-- [GOOGLE_ID](https://console.developers.google.com/apis/credentials) - Here you can set and get your google ID.
-- [GOOGLE_SECRET](https://console.developers.google.com/apis/credentials) - After that you can get the Secret too.
-- [MONGODB_URI](https://www.mongodb.com/) - Go there and get your mongoDB URI.
-- [NEXTAUTH_SECRET](example: -hello456_world546456-) - The toke use this secrete for authenticate the USER.
+## Mobile Development
 
-After do everything you can start the project and you can go to this URL [http://localhost:3000/register] (http://localhost:3000/register)
+This template supports mobile development through Capacitor. To build for mobile:
 
-Now you can check your mongoAtlas and you will see a new users added 
-
-if you try this path [http://localhost:3000/dashboard/profile] (http://localhost:3000/dashboard/profile)
-if all are right, you will see all information about the user
-
-## Run compile 
-If you want create or compile your code for Android or ios just run this command, you will need to have  (Xcode for iOS, Android Studio for Android)
-
-
+1. Build the web application:
 ```bash
 npm run build
-# and
+```
+
+2. Sync with Capacitor:
+```bash
 npx cap sync
-# and after all
+```
+
+3. Open in IDE:
+```bash
 npx cap open ios
 # or
 npx cap open android
 ```
 
-After this you'll see the IDEs and you need to make the rigth configurations on it.
+### Requirements for Mobile Development
 
+- iOS: Xcode and CocoaPods installed
+- Android: Android Studio with SDK tools
 
-If you need more information or help with this code, or have some fix to do you can contact to me.
+## Project Structure
 
-- [INSTAGRAM](https://www.instagram.com/sancheznotdev/) - Follow me
-- [TWITTER OR X](https://twitter.com/sancheznotdev) - Follow me
-- [PORTFOLIO PAGE](https://www.sancheznot.com/) -
+```
+src/
+├── app/                    # Next.js App Router
+├── components/            # React components
+├── infrastructure/        # External services setup
+├── lib/                  # Utility functions
+└── styles/               # Global styles
+```
+
+## Technical Stack
+
+- **Framework**: Next.js 14
+- **Authentication**: NextAuth.js
+- **Database**: MongoDB
+- **UI Libraries**: NextUI, Framer Motion
+- **Mobile**: Capacitor
+- **Styling**: Tailwind CSS
+
+## Connect With Me
+
+Feel free to reach out if you need help or want to contribute:
+
+- [📸 Instagram](https://www.instagram.com/sancheznotdev/)
+- [🐦 Twitter/X](https://twitter.com/sancheznotdev)
+- [🌐 Portfolio](https://www.sancheznot.com/)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Acknowledgments
+
+Special thanks to all contributors and the open-source community for making this template possible.
+
+---
+
+Made with ❤️ by [SancheznotDev](https://www.sancheznot.com/)
