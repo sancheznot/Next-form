@@ -38,7 +38,7 @@ User-friendly registration process with form validation.
 1. Clone the repository:
 ```bash
 git clone https://github.com/sancheznot/Next-form.git
-cd your-repo-name
+cd Next-form
 ```
 
 2. Install dependencies:
