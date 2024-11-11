@@ -1,0 +1,17 @@
+// src/styles/chakra-scope.css
+.chakra-scope {
+  /* Reset Chakra styles at this level */
+  all: initial; 
+  /* Ensure Chakra styles don't leak */
+  isolation: isolate;
+
+  /* Ensure Chakra styles only apply within this scope */
+  & * {
+    all: revert;
+  }
+
+  /* Prevent Chakra from affecting NextUI components */
+  & .nextui-component {
+    all: initial;
+  }
+}

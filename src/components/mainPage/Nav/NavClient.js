@@ -8,10 +8,10 @@ import {
   NavbarItem,
   Button,
 } from "@nextui-org/react";
-import { AcmeLogo } from "./AcmeLogo";
-import { ThemeSwitcher } from "@/components/NextTheme/ThemeSwitcher";
-import { SignOut } from "./SignOut";
-import { useAuth } from "@/hooks/useAuth";
+import { AcmeLogo } from "@/components/MainPage/Nav/AcmeLogo";
+import { ThemeSwitcher } from "@/components/shared/NextTheme/ThemeSwitcher";
+import { SignOut } from "@/components/MainPage/Nav/SignOut";
+import { useAuth } from "@/hooks/auth/useAuth";
 import Link from "next/link";
 
 export default function NavClient({ initialSession }) {

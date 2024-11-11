@@ -1,4 +1,5 @@
 import "./globals.css"
+import "./style/chakra-scope.css"
 import Provider from "@/components/Providers"
 import Nav from "@/components/MainPage/Nav/Nav"
 

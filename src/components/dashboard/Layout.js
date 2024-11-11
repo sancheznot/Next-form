@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Nav from './Main/Nav'
+import Nav from '@/components/dashboard/Main/Nav'
 import { useSession } from 'next-auth/react'
 
 const Layout = () => {

@@ -1,8 +1,8 @@
 // app/api/auth/2fa/enable/route.js
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { connectMongoDB } from "@/lib/mongodb";
-import User from "@/models/User";
+import { connectMongoDB } from "@/infrastructure/database/mongodb";
+import User from "@/infrastructure/database/models/User";
 
 export async function POST(req) {
   try {

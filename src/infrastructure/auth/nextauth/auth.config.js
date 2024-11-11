@@ -6,10 +6,9 @@
 
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import { connectMongoDB } from "@/lib/mongodb";
-import User from "@/models/User";
+import { connectMongoDB } from "@/infrastructure/database/mongodb";
+import User from "@/infrastructure/database/models/User";
 import bcrypt from "bcryptjs";
-import { authenticator } from 'otplib'; // Add this import
 
 const authConfig = {
   providers: [
@@ -66,34 +65,33 @@ const authConfig = {
 
             const user = await User.findOne({
               email: credentials.email,
-            }).select("+twoFactorSecret +backupCodes");
+            }).select('+twoFactorSecret +backupCodes.code +backupCodes.used')
 
             if (!user) throw new Error("User not found");
-
+            // Log user's backup codes structure
+            console.log(
+              "User backup codes structure:",
+              JSON.stringify(
+                {
+                  backupCodes: user.backupCodes,
+                  backupCodesLength: user.backupCodes?.length,
+                  hasBackupCodes: !!user.backupCodes,
+                },
+                null,
+                2
+              )
+            );
             let isValid = false;
 
             if (credentials.isBackupCode === "true") {
-              console.log("Attempting backup code verification");
-              console.log("Received code:", credentials.twoFactorToken);
-              console.log("Available backup codes:", user.backupCodes);
-
-              const backupCode = user.backupCodes.find(
-                (bc) => bc.code === credentials.twoFactorToken && !bc.used
-              );
-
-              if (backupCode) {
-                console.log("Valid backup code found");
-                backupCode.used = true;
-                await user.save();
-                isValid = true;
-              } else {
-                console.log("No valid backup code found");
-              }
+              console.log("Verifying backup code:", credentials.twoFactorToken);
+              // Use the model's method to verify backup code
+              console.log(credentials.twoFactorToken)
+              isValid = await user.verifyBackupCode(credentials.twoFactorToken);
             } else {
-              isValid = authenticator.verify({
-                token: credentials.twoFactorToken,
-                secret: user.twoFactorSecret,
-              });
+              console.log("Verifying 2FA token");
+              // Use the model's method to verify token
+              isValid = user.verify2FAToken(credentials.twoFactorToken);
             }
 
             if (!isValid) {

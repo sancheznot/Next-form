@@ -1,4 +1,4 @@
-// src/lib/totp.js
+// src/infrastructure/auth/totp/totp.js
 import { authenticator } from 'otplib';
 
 export function generateSecret() {

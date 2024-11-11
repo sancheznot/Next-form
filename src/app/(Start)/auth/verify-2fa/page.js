@@ -2,14 +2,14 @@
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import { Button, Card, Input } from "@nextui-org/react";
+
 
 export default function Verify2FA() {
   const [token, setToken] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isUsingBackup, setIsUsingBackup] = useState(false);
-  const router = useRouter();
   const { data: session, status } = useSession();
 
   // Single verification handler
@@ -97,8 +97,8 @@ export default function Verify2FA() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
+    <div className="flex items-center justify-center mt-28">
+      <Card className="max-w-md w-full space-y-8 p-8 bg-gray-100 rounded-lg shadow">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Two-Factor Authentication
@@ -112,7 +112,7 @@ export default function Verify2FA() {
 
         <form className="mt-8 space-y-6" onSubmit={handleVerify}>
           <div>
-            <input
+            <Input
               type={isUsingBackup ? "text" : "text"}
               inputMode={isUsingBackup ? "text" : "numeric"}
               value={token}
@@ -121,7 +121,6 @@ export default function Verify2FA() {
                 isUsingBackup ? "Enter backup code" : "Enter 6-digit code"
               }
               autoComplete="one-time-code"
-              className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
               maxLength={isUsingBackup ? 8 : 6}
               required
               disabled={isLoading}
@@ -133,7 +132,7 @@ export default function Verify2FA() {
             <div className="text-red-500 text-sm text-center">{error}</div>
           )}
 
-          <button
+          <Button
             type="submit"
             disabled={
               isLoading ||
@@ -148,7 +147,7 @@ export default function Verify2FA() {
             ) : (
               "Verify"
             )}
-          </button>
+          </Button>
 
           <button
             type="button"
@@ -169,7 +168,7 @@ export default function Verify2FA() {
             <p>Enter the 6-digit code from your authenticator app.</p>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

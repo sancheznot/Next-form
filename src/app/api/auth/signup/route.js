@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import User from "@/models/User";
-import { connectMongoDB } from "@/lib/mongodb";
+import User from "@/infrastructure/database/models/User";
+import { connectMongoDB } from "@/infrastructure/database/mongodb";
 import bcrypt from "bcryptjs";
 
 const profileImage =

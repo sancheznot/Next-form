@@ -1,5 +1,5 @@
-import { connectMongoDB } from "@/lib/mongodb";
-import User from "@/models/User";
+import { connectMongoDB } from "@/infrastructure/database/mongodb";
+import User from "@/infrastructure/database/models/User";
 
 export async function POST(request, { params }) {
   const { id } = params;
