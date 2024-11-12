@@ -7,7 +7,7 @@ import User from "@/infrastructure/database/models/User";
 export async function POST(req) {
   try {
     const session = await auth();
-    console.log("Session in enable route:", session); // Debug log
+    // console.log("Session in enable route:", session); // Debug log
 
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -15,7 +15,7 @@ export async function POST(req) {
 
     const body = await req.json();
     const { token } = body;
-    console.log("Received token:", token); // Debug log
+    // console.log("Received token:", token); // Debug log
 
     if (!token) {
       return NextResponse.json({ error: "Token is required" }, { status: 400 });
@@ -30,11 +30,11 @@ export async function POST(req) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    console.log("Found user:", user.email); // Debug log
+    // console.log("Found user:", user.email); // Debug log
 
     // Verify the token
     const isValid = user.verify2FAToken(token);
-    console.log("Token validation result:", isValid); // Debug log
+    // console.log("Token validation result:", isValid); // Debug log
 
     if (!isValid) {
       return NextResponse.json(
@@ -46,7 +46,7 @@ export async function POST(req) {
     // Enable 2FA
     user.twoFactorEnabled = true;
     await user.save();
-    console.log("2FA enabled for user:", user.email); // Debug log
+    // console.log("2FA enabled for user:", user.email); // Debug log
 
     return NextResponse.json({
       success: true,

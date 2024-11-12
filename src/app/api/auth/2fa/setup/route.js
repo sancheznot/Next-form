@@ -38,7 +38,7 @@ export async function GET(req) {
     }));
 
     // Log for verification
-    console.log('Generated backup codes:', backupCodes);
+    // console.log('Generated backup codes:', backupCodes);
 
     // Save everything
     user.twoFactorSecret = secret;
@@ -48,7 +48,7 @@ export async function GET(req) {
     // Verify saved data
     const savedUser = await User.findOne({ email: user.email })
       .select('+twoFactorSecret +backupCodes');
-    console.log('Saved backup codes:', savedUser.backupCodes);
+    // console.log('Saved backup codes:', savedUser.backupCodes);
 
     return NextResponse.json({ 
       secret,

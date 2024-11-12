@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
 import axios from "axios";
+import { Image } from "@nextui-org/react";
 
 export default function Setup2FA() {
   // State management
@@ -17,7 +17,7 @@ export default function Setup2FA() {
     setIsLoading(true);
     try {
       const { data } = await axios.get("/api/auth/2fa/setup");
-      console.log("Setup response:", data); // Debug log
+      // console.log("Setup response:", data); // Debug log
 
       if (data.error) {
         setError(data.error);
@@ -42,7 +42,7 @@ export default function Setup2FA() {
     setError("");
 
     try {
-      console.log("Enabling 2FA with token:", token); // Debug log
+      // console.log("Enabling 2FA with token:", token); // Debug log
 
       // Call the enable endpoint, not verify
       const { data } = await axios.post(
@@ -57,7 +57,7 @@ export default function Setup2FA() {
         }
       );
 
-      console.log("Enable response:", data); // Debug log
+      // console.log("Enable response:", data); // Debug log
 
       if (data.success) {
         setStep("complete");
@@ -67,7 +67,7 @@ export default function Setup2FA() {
     } catch (error) {
       console.error("Enable error full:", error);
       if (error.response) {
-        console.log("Error response:", error.response.data); // Debug log
+        // console.log("Error response:", error.response.data); // Debug log
         setError(error.response.data.error || "Failed to enable 2FA");
       } else {
         setError("An error occurred while enabling 2FA");
@@ -107,7 +107,7 @@ export default function Setup2FA() {
 
           {qrCode && (
             <div className="w-64 h-64 relative mx-auto border p-2">
-              <img src={qrCode} alt="2FA QR Code" className="w-full h-full" />
+              <Image src={qrCode} alt="2FA QR Code" className="w-full h-full" />
             </div>
           )}
 

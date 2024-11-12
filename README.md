@@ -24,6 +24,14 @@ Clean and modern sign-in interface with social login options.
 ![Sign Up Page](/public/git/img/signUp.png)
 User-friendly registration process with form validation.
 
+### 2fa-verify
+![2fa-verify Page](/public/git/img/2fa.png)
+User-friendly 2fa verification
+
+### 2fa-verify-Backup Code
+![2fa-verify with backup code Page](/public/git/img/2fabackupcode.png)
+User-friendly 2fa verification
+
 ## Quick Start
 
 ### Prerequisites
