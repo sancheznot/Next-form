@@ -40,6 +40,9 @@ export async function middleware(request) {
 
 // Configure which routes should be handled by middleware
 export const config = {
+  unstable_allowDynamic: [
+    '/src/infrastructure/database/models/User.js', // allows the User model file
+  ],
   matcher: [
     /*
      * Match all request paths except:
