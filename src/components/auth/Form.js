@@ -56,6 +56,7 @@ const Form = () => {
         setSuccess(null);
         setErrors(error.response?.data.message || "Registration failed");
       } finally {
+        await new Promise(resolve => setTimeout(resolve, 100));
         setIsLoading(false);
       }
     }
@@ -100,6 +101,7 @@ const Form = () => {
         setSuccess(null);
         setErrors("Login failed");
       } finally {
+        await new Promise(resolve => setTimeout(resolve, 100));
         setIsLoading(false);
       }
     }
@@ -115,10 +117,10 @@ const Form = () => {
         }>
         <div className="flex self-start items-center">
           {pathname === "/login" ? (
-            <h2 className="text-5xl p-2 ml-10 font-thin">Sign In</h2>
+            <h2 data-testid="form-title" className="text-5xl p-2 ml-10 font-thin">Sign In</h2>
           ) : (
             <div className="flex flex-col h-full dark:text-white">
-              <h2 className="text-5xl p-2 font-thin">Sign Up</h2>
+              <h2 data-testid="form-title" className="text-5xl p-2 font-thin">Sign Up</h2>
               <h3 className="text-xl sm:text-base p-2 ">
                 slogan slogan slogan slogan slogan slogan slogan slogan slogan
               </h3>
@@ -128,12 +130,12 @@ const Form = () => {
 
         <div className="flex w-5/12 sm:w-11/12 sm:text-sm mt-28 sm:mt-1 ml-4 sm:ml-0 ">
           {errors && (
-            <div className="bg-red-500 p-3 rounded-lg text-white w-full text-center">
+            <div data-testid="error-message" className="bg-red-500 p-3 rounded-lg text-white w-full text-center">
               {errors}
             </div>
           )}
           {success && (
-            <div className="bg-green-500 p-3 rounded-lg text-white w-full text-center">
+            <div data-testid="success-message" className="bg-green-500 p-3 rounded-lg text-white w-full text-center">
               {success}
             </div>
           )}
@@ -204,6 +206,7 @@ const Form = () => {
                     type="text"
                     id="name"
                     name="name"
+                    data-testid="name-input"
                     disabled={isLoading}
                     className="border border-gray-300 rounded-lg p-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder="Enter your name"
@@ -217,6 +220,7 @@ const Form = () => {
                     type="text"
                     id="lastname"
                     name="lastname"
+                    data-testid="lastname-input"
                     disabled={isLoading}
                     className="border border-gray-300 rounded-lg p-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder="Enter your lastname"
@@ -237,19 +241,16 @@ const Form = () => {
                 </div>
               </>
             )}
-            {pathname === "/login" ? (
-              <button
-                disabled={isLoading}
-                className="w-5/12 sm:w-10/12 bg-gray-300 p-3 mt-2 rounded-xl text-xl hover:bg-blue-500 hover:text-white text-black disabled:opacity-50 disabled:cursor-not-allowed">
-                {isLoading ? "Signing In..." : "Sign In"}
-              </button>
-            ) : (
-              <button
-                disabled={isLoading}
-                className="w-5/12 sm:w-10/12 bg-gray-300 p-2 mt-2 rounded-xl text-xl hover:bg-blue-500 hover:text-white text-black disabled:opacity-50 disabled:cursor-not-allowed">
-                {isLoading ? "Signing Up..." : "Sign Up"}
-              </button>
-            )}
+            <button
+              type="submit"
+              data-testid="submit-button"
+              disabled={isLoading}
+              aria-disabled={isLoading}
+              className={`w-5/12 sm:w-10/12 bg-gray-300 p-3 mt-2 rounded-xl text-xl 
+                hover:bg-blue-500 hover:text-white text-black 
+                ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              {isLoading ? "Processing..." : pathname === "/login" ? "Sign In" : "Sign Up"}
+            </button>
           </form>
 
           <div className="flex flex-col w-full">
@@ -267,7 +268,12 @@ const Form = () => {
                     disabled={isLoading}
                     className="w-full p-1 mt-2 rounded-lg text-xl bg-white border border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed">
                     <div className="w-16">
-                      <Image src={GoogleLogo} alt="logo_Google" />
+                      <Image 
+                        src={GoogleLogo} 
+                        alt="logo_Google"
+                        width={100}
+                        height={100}
+                      />
                     </div>
                   </button>
                 </div>
@@ -297,7 +303,12 @@ const Form = () => {
                       disabled={isLoading}
                       className="w-full p-1 mt-2 rounded-lg text-xl bg-white border border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed">
                       <div className="w-16 sm:w-14">
-                        <Image src={GoogleLogo} alt="logo_Google" />
+                        <Image 
+                          src={GoogleLogo} 
+                          alt="logo_Google"
+                          width={100}
+                          height={100}
+                        />
                       </div>
                     </button>
                   </div>

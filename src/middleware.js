@@ -2,6 +2,8 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 
+export const runtime = 'nodejs' // Force Node.js runtime
+
 export async function middleware(request) {
   const { pathname } = request.nextUrl
 

@@ -6,9 +6,9 @@
 
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import { connectMongoDB } from "@/infrastructure/database/mongodb";
-import User from "@/infrastructure/database/models/User";
+import { MongoDBAdapter } from "./mongodb-adapter";
 import bcrypt from "bcryptjs";
+import User from "@/infrastructure/database/models/User";
 
 const authConfig = {
   providers: [
@@ -16,129 +16,60 @@ const authConfig = {
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
       async profile(profile) {
-        await connectMongoDB();
-
-        const userExists = await User.findOne({ email: profile.email });
+        const userExists = await MongoDBAdapter.getUserByEmail(profile.email);
         if (userExists) return userExists;
-
-        try {
-          // Generate random password for Google users
-          const userpassword =
-            profile.given_name + Math.floor(Math.random() * 1000000000);
-          const salt = await bcrypt.genSalt(12);
-          const passwordEncrypted = await bcrypt.hash(userpassword, salt);
-
-          // Create new user from Google profile
-          const newUser = await User.create({
-            email: profile.email,
-            name: profile.given_name || profile.name.split(" ")[0],
-            lastname: profile.family_name || profile.name.split(" ")[1] || "",
-            password: passwordEncrypted,
-            image:
-              profile.picture ||
-              "https://upload.wikimedia.org/wikipedia/commons/5/50/User_icon-cp.svg",
-            accountStatus: "active",
-            rol: "user",
-            isAdmin: false,
-          });
-
-          return newUser;
-        } catch (error) {
-          console.error("Error creating user from OAuth profile:", error);
-          throw new Error("User validation failed");
-        }
-      },
+        return await MongoDBAdapter.createUserFromOAuth(profile);
+      }
     }),
     Credentials({
       async authorize(credentials) {
-        try {
-          await connectMongoDB();
+        if (credentials.twoFactorToken) {
+          console.log("Processing 2FA verification for:", credentials.email);
+          // Log received credentials for debugging
+          console.log("Credentials received:", {
+            ...credentials,
+            password: "[REDACTED]",
+          });
 
-          // Handle 2FA verification attempt
-          if (credentials.twoFactorToken) {
-            console.log("Processing 2FA verification for:", credentials.email);
-            // Log received credentials for debugging
-            console.log("Credentials received:", {
-              ...credentials,
-              password: "[REDACTED]",
-            });
+          const user = await User.findOne({
+            email: credentials.email,
+          }).select('+twoFactorSecret +backupCodes.code +backupCodes.used')
 
-            const user = await User.findOne({
-              email: credentials.email,
-            }).select('+twoFactorSecret +backupCodes.code +backupCodes.used')
+          if (!user) throw new Error("User not found");
+          // Log user's backup codes structure
+          console.log(
+            "User backup codes structure:",
+            JSON.stringify(
+              {
+                backupCodes: user.backupCodes,
+                backupCodesLength: user.backupCodes?.length,
+                hasBackupCodes: !!user.backupCodes,
+              },
+              null,
+              2
+            )
+          );
+          let isValid = false;
 
-            if (!user) throw new Error("User not found");
-            // Log user's backup codes structure
-            console.log(
-              "User backup codes structure:",
-              JSON.stringify(
-                {
-                  backupCodes: user.backupCodes,
-                  backupCodesLength: user.backupCodes?.length,
-                  hasBackupCodes: !!user.backupCodes,
-                },
-                null,
-                2
-              )
-            );
-            let isValid = false;
-
-            if (credentials.isBackupCode === "true") {
-              console.log("Verifying backup code:", credentials.twoFactorToken);
-              // Use the model's method to verify backup code
-              console.log(credentials.twoFactorToken)
-              isValid = await user.verifyBackupCode(credentials.twoFactorToken);
-            } else {
-              console.log("Verifying 2FA token");
-              // Use the model's method to verify token
-              isValid = user.verify2FAToken(credentials.twoFactorToken);
-            }
-
-            if (!isValid) {
-              const errorMsg =
-                credentials.isBackupCode === "true"
-                  ? "Invalid backup code"
-                  : "Invalid verification code";
-              throw new Error(errorMsg);
-            }
-
-            return {
-              id: user._id,
-              email: user.email,
-              name: user.name,
-              lastname: user.lastname,
-              image: user.image,
-              rol: user.rol,
-              isAdmin: user.isAdmin,
-              accountStatus: user.accountStatus,
-              twoFactorVerified: true,
-            };
+          if (credentials.isBackupCode === "true") {
+            console.log("Verifying backup code:", credentials.twoFactorToken);
+            // Use the model's method to verify backup code
+            console.log(credentials.twoFactorToken)
+            isValid = await user.verifyBackupCode(credentials.twoFactorToken);
+          } else {
+            console.log("Verifying 2FA token");
+            // Use the model's method to verify token
+            isValid = user.verify2FAToken(credentials.twoFactorToken);
           }
 
-          // Normal login process
-          console.log("Processing initial login for:", credentials.email);
-          const user = await User.findOne({ email: credentials.email }).select(
-            "+password +twoFactorEnabled"
-          );
-
-          if (!user) throw new Error("No user found with this email");
-
-          const isValidPassword = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-          if (!isValidPassword) throw new Error("Invalid password");
-
-          if (user.twoFactorEnabled) {
-            return {
-              id: user._id,
-              email: user.email,
-              requiresTwoFactor: true,
-              twoFactorVerified: false,
-            };
+          if (!isValid) {
+            const errorMsg =
+              credentials.isBackupCode === "true"
+                ? "Invalid backup code"
+                : "Invalid verification code";
+            throw new Error(errorMsg);
           }
 
-          // Return complete user data for non-2FA users
           return {
             id: user._id,
             email: user.email,
@@ -150,12 +81,44 @@ const authConfig = {
             accountStatus: user.accountStatus,
             twoFactorVerified: true,
           };
-        } catch (error) {
-          console.error("Authentication error:", error);
-          throw error;
         }
-      },
-    }),
+        
+        console.log("Processing initial login for:", credentials.email);
+        const user = await User.findOne({ email: credentials.email }).select(
+          "+password +twoFactorEnabled"
+        );
+
+        if (!user) throw new Error("No user found with this email");
+
+        const isValidPassword = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+        if (!isValidPassword) throw new Error("Invalid password");
+
+        if (user.twoFactorEnabled) {
+          return {
+            id: user._id,
+            email: user.email,
+            requiresTwoFactor: true,
+            twoFactorVerified: false,
+          };
+        }
+
+        // Return complete user data for non-2FA users
+        return {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          lastname: user.lastname,
+          image: user.image,
+          rol: user.rol,
+          isAdmin: user.isAdmin,
+          accountStatus: user.accountStatus,
+          twoFactorVerified: true,
+        };
+      }
+    })
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {

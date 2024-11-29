@@ -8,4 +8,7 @@ export const {
   handlers: { GET, POST },
   signIn,
   signOut,
-} = NextAuth(authConfig);
+} = NextAuth({
+  ...authConfig,
+  trustHost: true,
+});
