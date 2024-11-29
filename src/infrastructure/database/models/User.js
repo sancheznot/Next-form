@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-const { Schema, model } = mongoose;
+const { Schema, model } = require('mongoose');
 import { authenticator } from "otplib";
 import crypto from "crypto";
 
@@ -162,3 +161,4 @@ UserSchema.pre("save", function(next) {
 // Create or use existing model
 const User = models?.User || model("User", UserSchema);
 export default User;
+

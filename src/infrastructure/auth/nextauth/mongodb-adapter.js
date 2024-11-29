@@ -1,4 +1,3 @@
-
 import { connectMongoDB } from "@/infrastructure/database/mongodb";
 import User from "@/infrastructure/database/models/User";
 import bcrypt from "bcryptjs";
