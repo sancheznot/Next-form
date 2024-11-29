@@ -107,7 +107,6 @@ const AvatarUpdate = ({ username }) => {
           </form>
         </div>
       </div>
-      <GoBackButton />
     </div>
   );
 };
