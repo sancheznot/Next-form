@@ -1,4 +1,3 @@
-// src/infrastructure/database/models/User.js
 const { Schema, model } = require('mongoose');
 import { authenticator } from "otplib";
 import crypto from "crypto";
