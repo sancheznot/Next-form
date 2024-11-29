@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, models } = require('mongoose');
 import { authenticator } from "otplib";
 import crypto from "crypto";
 
