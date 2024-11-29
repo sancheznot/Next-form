@@ -1,5 +1,7 @@
 # Next.js Authentication Template
 
+![Tests](https://github.com/sancheznot/Next-form/actions/workflows/test.yml/badge.svg)
+
 A modern authentication template built with Next.js 14, featuring Google OAuth, Two-Factor Authentication (2FA), and MongoDB integration. This template provides a solid foundation for building secure web applications with advanced authentication features.
 
 ## Features
@@ -141,6 +143,14 @@ src/
 - **UI Libraries**: NextUI, Framer Motion
 - **Mobile**: Capacitor
 - **Styling**: Tailwind CSS
+
+## Tests
+
+This project includes a comprehensive test suite to ensure the reliability and stability of the application. The tests are organized into different categories:
+
+### Setup Tests
+
+These tests ensure that the basic setup of the project is correct.
 
 ## Connect With Me
 

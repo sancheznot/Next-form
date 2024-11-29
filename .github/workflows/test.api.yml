@@ -29,7 +29,7 @@ jobs:
         run: npm install
 
       - name: Run tests
-        run: npm test
+        run: npm test:api
 
       - name: Run Jest tests
         run: npx jest

@@ -1,4 +1,5 @@
-import { render, screen, React } from '@test-utils'
+import { render, screen } from '@test-utils'
+import React from 'react'
 
 test('basic test setup', () => {
   render(React.createElement('div', null, 'Test Setup'))
