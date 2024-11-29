@@ -1,5 +1,5 @@
 // src/infrastructure/database/models/User.js
-import { Schema, model, models } from "mongoose";
+const { Schema, model } = require('mongoose');
 import { authenticator } from "otplib";
 import crypto from "crypto";
 
