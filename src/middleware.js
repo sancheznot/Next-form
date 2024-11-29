@@ -1,6 +1,6 @@
 // Middleware to handle authentication and protected routes
 import { NextResponse } from "next/server"
-import { auth } from "@/auth"
+
 
 export const runtime = 'nodejs' // Force Node.js runtime
 
