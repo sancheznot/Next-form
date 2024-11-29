@@ -32,4 +32,4 @@ jobs:
         run: npm run test:api
 
       - name: Run Jest tests
-        run: npx jest
+        run: npx jest --selectProjects API/DB

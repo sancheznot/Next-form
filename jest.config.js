@@ -25,7 +25,11 @@ const customJestConfig = {
             }
           }
         }]
-      }
+      },
+      transformIgnorePatterns: [
+        '/node_modules/(?!(some-esm-package)/)',
+        '\\.(jpg|jpeg|png|gif|webp|svg)$'
+      ]
     },
     {
       displayName: 'UI',
